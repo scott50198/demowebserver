@@ -1,4 +1,4 @@
-package main
+package dbhelper
 
 import (
 	"database/sql"
@@ -13,13 +13,4 @@ func OpenDB() (*sql.DB, error) {
 		return nil, err
 	}
 	return db, nil
-}
-
-func main() {
-	// _, err := OpenDB()
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// fmt.Println("open db success")
-
 }

@@ -1,7 +1,9 @@
 package handler
 
 import (
+	"demowebserver/auth"
 	"demowebserver/config"
+	"demowebserver/model"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -52,10 +54,19 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("post receive")
 
 		r.ParseForm()
-		fmt.Println(r.Form.Get("account"))
-		fmt.Println(r.Form.Get("password"))
-		fmt.Println(r.Form.Get("name"))
-		fmt.Println(r.Form.Get("email"))
+
+		info := model.UserInfo{
+			Account:  r.Form.Get("account"),
+			Password: r.Form.Get("password"),
+			Name:     r.Form.Get("name"),
+			Email:    r.Form.Get("email"),
+		}
+
+		if ok := auth.Register(info); ok {
+
+		} else {
+
+		}
 
 	}
 }
