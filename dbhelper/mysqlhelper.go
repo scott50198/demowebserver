@@ -2,7 +2,7 @@ package main
 
 import (
 	"database/sql"
-	"sexdealwebserver/config"
+	"demowebserver/config"
 
 	_ "github.com/go-sql-driver/mysql"
 )
