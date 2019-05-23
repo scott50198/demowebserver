@@ -1,14 +1,11 @@
 package auth
 
 import (
+	"demowebserver/dbhelper"
 	"demowebserver/model"
-	"demowebserver/utils"
 )
 
-func Register(data model.UserInfo) bool {
+func Register(data model.UserInfo) error {
 
-	data.CreateTime = utils.GetNowTimeMillis()
-	data.UpdateTime = utils.GetNowTimeMillis()
-
-	return true
+	return dbhelper.Register(data)
 }

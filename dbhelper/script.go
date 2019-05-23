@@ -10,3 +10,6 @@ const CREATE_USERINFO_TABLE = `create table userInfo(
     updateTime timestamp not null,
     primary key(id),
     index(updateTime));`
+
+const INSERT_USERINFO = `INSERT INTO userInfo (account, password, name, email, createTime, updateTime) 
+    VALUES (?, ?, ?, ?, now(), now())`

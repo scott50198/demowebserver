@@ -44,7 +44,6 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 
 func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
-		fmt.Println("register")
 		contents, err := ioutil.ReadFile(config.FrontendRoot + "/html/register.html")
 		if err != nil {
 			fmt.Println(err.Error())
@@ -62,10 +61,10 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 			Email:    r.Form.Get("email"),
 		}
 
-		if ok := auth.Register(info); ok {
+		err := auth.Register(info)
 
-		} else {
-
+		if err != nil {
+			fmt.Println(err.Error())
 		}
 
 	}

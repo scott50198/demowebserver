@@ -5,5 +5,5 @@ const (
 
 	SqlRootAccount  string = "root"
 	SqlRootPassword string = "xyz88888888"
-	SqlDBName       string = "sexdealwebserver"
+	SqlDBName       string = "demowebserverdb"
 )

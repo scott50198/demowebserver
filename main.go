@@ -1,18 +1,18 @@
 package main
 
 import (
+	"demowebserver/dbhelper"
 	"demowebserver/handler"
 	"log"
 	"net/http"
 )
 
-type ContactDetails struct {
-	Email   string
-	Subject string
-	Message string
-}
-
 func main() {
+
+	err := dbhelper.OpenDB()
+	if err != nil {
+		panic(err)
+	}
 
 	http.HandleFunc("/", handler.IndexHandler)
 	http.HandleFunc("/login", handler.LoginHandler)

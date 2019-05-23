@@ -3,14 +3,43 @@ package dbhelper
 import (
 	"database/sql"
 	"demowebserver/config"
+	"demowebserver/model"
+	"errors"
 
+	"github.com/go-sql-driver/mysql"
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func OpenDB() (*sql.DB, error) {
+var DB *sql.DB
+
+func OpenDB() error {
 	db, err := sql.Open("mysql", config.SqlRootAccount+":"+config.SqlRootPassword+"@/"+config.SqlDBName)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return db, nil
+
+	DB = db
+
+	return nil
+}
+
+func Register(user model.UserInfo) error {
+	_, err := DB.Exec(
+		"INSERT INTO userInfo (account,password,name,email,createTime,updateTime) VALUES (?, ?,?,?,now(),now())",
+		user.Account, user.Password, user.Name, user.Email,
+	)
+
+	if err == nil {
+		return nil
+	}
+
+	if mysqlError, ok := err.(*mysql.MySQLError); ok {
+		if mysqlError.Number == 1062 {
+			return errors.New("帳號重複，請重新輸入")
+		} else {
+			return errors.New("未知錯誤")
+		}
+	} else {
+		return errors.New("未知錯誤")
+	}
 }
