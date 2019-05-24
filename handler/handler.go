@@ -4,6 +4,7 @@ import (
 	"demowebserver/auth"
 	"demowebserver/config"
 	"demowebserver/model"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -39,7 +40,7 @@ func WelcomeHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("login")
+	w.Write([]byte("login"))
 }
 
 func RegisterHandler(w http.ResponseWriter, r *http.Request) {
@@ -50,7 +51,6 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		w.Write(contents)
 	} else if r.Method == "POST" {
-		fmt.Println("post receive")
 
 		r.ParseForm()
 
@@ -65,6 +65,19 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 
 		if err != nil {
 			fmt.Println(err.Error())
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusOK)
+			jj, _ := json.Marshal(struct {
+				Status int    `json:"status"`
+				Msg    string `json:"msg"`
+			}{
+				200,
+				err.Error(),
+			})
+
+			w.Write(jj)
+		} else {
+			w.Write([]byte("ok"))
 		}
 
 	}

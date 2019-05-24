@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Register</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -30,41 +30,34 @@
             name = document.getElementById("name").value
             email = document.getElementById("email").value
 
+            // if(!account.match('[a-zA-z0-9]{6-16}')){
+            //     alert("帳號格式不符")
+            // }
+
             if (!(password1 === password2)) {
                 alert("password1 need equel password2")
             }
-            // window.location.href = '/doRegister?' +
-            //     'account=' + account +
-            //     '&password=' + password1 +
-            //     '&name=' + name +
-            //     '&email=' + email
 
-            post("/register", { 'account': account, 'password': password1, 'name': name, 'email': email })
+            console.log(account)
+            console.log(password1)
+            console.log(name)
+            console.log(email)
+            
+
+            $.ajax({
+                type:"post",
+                url:"/register",
+                data: { 'account': account,'password':password1,'name':name,'email':email },
+                dataType:"text",
+                success: function (data) {
+                    console.log(data)
+                },
+                error:function(data){
+                    console.log(data)
+                },
+            });
+
         }
-
-        function post(path, params, method = 'post') {
-
-            // The rest of this code assumes you are not using a library.
-            // It can be made less wordy if you use one.
-            const form = document.createElement('form');
-            form.method = method;
-            form.action = path;
-
-            for (const key in params) {
-                if (params.hasOwnProperty(key)) {
-                    const hiddenField = document.createElement('input');
-                    hiddenField.type = 'hidden';
-                    hiddenField.name = key;
-                    hiddenField.value = params[key];
-
-                    form.appendChild(hiddenField);
-                }
-            }
-
-            document.body.appendChild(form);
-            form.submit();
-        }
-
     </script>
 </head>
 
@@ -74,9 +67,9 @@
 
     <form style="align-items: center">
 
-        <div class="form-group col-md-5">
+        <div class="form-group col-md-5 kjhjkh" style>
             <label for="account">Account</label>
-            <input type="text" class="form-control" id="account" placeholder="Account" name="account">
+            <input type="text" class="form-control" id="account" placeholder="Account" name="account" pattern="[a-zA-Z0-9]{3}">
         </div>
         <div class="form-group col-md-5">
             <label for="password1">Password</label>
@@ -98,9 +91,7 @@
         <button type="button" class="btn btn-primary" onclick="register()">Submit</button>
     </form>
 
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
         integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
         crossorigin="anonymous"></script>

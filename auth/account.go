@@ -7,5 +7,14 @@ import (
 
 func Register(data model.UserInfo) error {
 
-	return dbhelper.Register(data)
+	if err := checkUserInfoValidate(data); err != nil {
+		return err
+	} else {
+		return dbhelper.Register(data)
+	}
+}
+
+func checkUserInfoValidate(data model.UserInfo) error {
+
+	return nil
 }

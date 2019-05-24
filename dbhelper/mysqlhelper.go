@@ -25,21 +25,30 @@ func OpenDB() error {
 
 func Register(user model.UserInfo) error {
 	_, err := DB.Exec(
-		"INSERT INTO userInfo (account,password,name,email,createTime,updateTime) VALUES (?, ?,?,?,now(),now())",
+		INSERT_USERINFO,
 		user.Account, user.Password, user.Name, user.Email,
 	)
 
-	if err == nil {
-		return nil
+	if err != nil {
+		return mysqlErrorTranslater(err)
 	}
 
+	return nil
+
+}
+
+func mysqlErrorTranslater(err error) error {
 	if mysqlError, ok := err.(*mysql.MySQLError); ok {
-		if mysqlError.Number == 1062 {
+
+		switch mysqlError.Number {
+		case 1062:
 			return errors.New("帳號重複，請重新輸入")
-		} else {
+		default:
 			return errors.New("未知錯誤")
 		}
+
 	} else {
 		return errors.New("未知錯誤")
 	}
+
 }
