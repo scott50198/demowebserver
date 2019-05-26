@@ -3,18 +3,50 @@ package auth
 import (
 	"demowebserver/dbhelper"
 	"demowebserver/model"
+	"errors"
+	"regexp"
 )
 
 func Register(data model.UserInfo) error {
 
-	if err := checkUserInfoValidate(data); err != nil {
-		return err
-	} else {
-		return dbhelper.Register(data)
+	if !checkUserInfoValidate(data) {
+		return errors.New("Input Formate Error")
 	}
+
+	if dbhelper.CheckAccountExist(data.Account) {
+		return errors.New("Account Is Exist")
+	}
+
+	if dbhelper.CheckEmailExist(data.Email) {
+		return errors.New("Email Is Exist")
+	}
+
+	return dbhelper.Register(data)
 }
 
-func checkUserInfoValidate(data model.UserInfo) error {
+func checkUserInfoValidate(data model.UserInfo) bool {
 
-	return nil
+	accountAndPasswordRe := regexp.MustCompile(`^[\w]{6,16}$`)
+	emailRe := regexp.MustCompile(`^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$`)
+
+	contents := accountAndPasswordRe.Find([]byte(data.Account))
+	if len(contents) == 0 {
+		return false
+	}
+
+	contents = accountAndPasswordRe.Find([]byte(data.Password))
+	if len(contents) == 0 {
+		return false
+	}
+
+	if len(data.Name) < 4 || len(data.Name) > 16 {
+		return false
+	}
+
+	contents = emailRe.Find([]byte(data.Email))
+	if len(contents) == 0 {
+		return false
+	}
+
+	return true
 }

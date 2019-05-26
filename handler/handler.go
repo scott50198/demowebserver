@@ -65,20 +65,17 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 
 		if err != nil {
 			fmt.Println(err.Error())
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(http.StatusOK)
-			jj, _ := json.Marshal(struct {
-				Status int    `json:"status"`
-				Msg    string `json:"msg"`
-			}{
-				200,
-				err.Error(),
-			})
-
-			w.Write(jj)
+			resp := model.Response{
+				StatusCode: http.StatusConflict,
+				Msg:        err.Error(),
+			}
+			json.NewEncoder(w).Encode(resp)
 		} else {
-			w.Write([]byte("ok"))
+			resp := model.Response{
+				StatusCode: http.StatusOK,
+				Msg:        "OK",
+			}
+			json.NewEncoder(w).Encode(resp)
 		}
-
 	}
 }

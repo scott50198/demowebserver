@@ -58,7 +58,7 @@
                 return
             }
 
-            if (!account.match('^[A-Za-z0-9]{6,16}$')) {
+            if (!account.match('^\\w{6,16}$')) {
                 alert("帳號格式不符")
                 return
             }
@@ -68,7 +68,7 @@
                 return
             }
 
-            if (!password1.match('^[A-Za-z0-9]{6,16}$')) {
+            if (!password1.match('^\\w{6,16}$')) {
                 alert("密碼格式錯誤，請重新輸入")
                 return
             }

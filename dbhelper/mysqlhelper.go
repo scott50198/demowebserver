@@ -5,6 +5,7 @@ import (
 	"demowebserver/config"
 	"demowebserver/model"
 	"errors"
+	"fmt"
 
 	"github.com/go-sql-driver/mysql"
 	_ "github.com/go-sql-driver/mysql"
@@ -28,13 +29,34 @@ func Register(user model.UserInfo) error {
 		INSERT_USERINFO,
 		user.Account, user.Password, user.Name, user.Email,
 	)
-
 	if err != nil {
 		return mysqlErrorTranslater(err)
 	}
-
 	return nil
+}
 
+func CheckAccountExist(accout string) bool {
+	row, err := DB.Query(CHECK_ACCOUNT_EXIST, accout)
+	defer row.Close()
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return true
+	}
+
+	return row.Next()
+}
+
+func CheckEmailExist(email string) bool {
+	row, err := DB.Query(CHECK_EMAIL_EXIST, email)
+	defer row.Close()
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return true
+	}
+
+	return row.Next()
 }
 
 func mysqlErrorTranslater(err error) error {

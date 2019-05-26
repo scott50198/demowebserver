@@ -3,7 +3,7 @@ package dbhelper
 const CREATE_USERINFO_TABLE = `create table userInfo(
 	id int not null auto_increment,
     account varchar(30) not null unique,
-    password varchar(60) not null,
+    password varchar(70) not null,
     name varchar(20) not null,
     email varchar(30) not null unique,
     createTime timestamp not null,
@@ -12,4 +12,10 @@ const CREATE_USERINFO_TABLE = `create table userInfo(
     index(updateTime));`
 
 const INSERT_USERINFO = `INSERT INTO userInfo (account, password, name, email, createTime, updateTime) 
-    VALUES (?, ?, ?, ?, now(), now())`
+    SELECT ?, sha2(?, 256), ?, ?, now(), now()`
+
+const CHECK_ACCOUNT_EXIST = `select * from userInfo
+    where account= ?`
+
+const CHECK_EMAIL_EXIST = `select * from userInfo
+    where email= ?`
