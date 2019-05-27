@@ -19,3 +19,6 @@ const CHECK_ACCOUNT_EXIST = `select * from userInfo
 
 const CHECK_EMAIL_EXIST = `select * from userInfo
     where email= ?`
+
+const GET_USER_ID_FROM_ACCOUNT = `select id from userInfo
+    where account = ?`

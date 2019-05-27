@@ -59,6 +59,21 @@ func CheckEmailExist(email string) bool {
 	return row.Next()
 }
 
+func GetUserIdFromAccount(account string) (int, error) {
+	row, err := DB.Query(GET_USER_ID_FROM_ACCOUNT, account)
+	defer row.Close()
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return -1, mysqlErrorTranslater(err)
+	}
+
+	var id int
+	row.Scan(&id)
+
+	return id, nil
+}
+
 func mysqlErrorTranslater(err error) error {
 	if mysqlError, ok := err.(*mysql.MySQLError); ok {
 
