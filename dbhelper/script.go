@@ -22,3 +22,6 @@ const CHECK_EMAIL_EXIST = `select * from userInfo
 
 const GET_USER_ID_FROM_ACCOUNT = `select id from userInfo
     where account = ?`
+
+const CHECK_ACCOUNT_AND_PASSWORD_VALIDATE = `select * from userInfo
+    where account = ? and password = sha2(?, 256)`

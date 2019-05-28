@@ -37,13 +37,8 @@
                 url: "/register",
                 data: { 'account': account, 'password': password1, 'name': name, 'email': email },
                 dataType: "text",
-                success: function (data,textStatus) {
-                    if (data.redirect) {
-                        console.log("redirect")
-                        window.location.href = data;
-                    } else {
-                        console.log(data)
-                    }
+                success: function (data) {
+                    console.log(data)
                 },
                 error: function (data) {
                     console.log(data)

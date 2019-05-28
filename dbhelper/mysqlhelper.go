@@ -35,6 +35,18 @@ func Register(user model.UserInfo) error {
 	return nil
 }
 
+func CheckAccountAndPasswordValidate(account string, password string) bool {
+	row, err := DB.Query(CHECK_ACCOUNT_AND_PASSWORD_VALIDATE, account, password)
+	defer row.Close()
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return false
+	}
+
+	return row.Next()
+}
+
 func CheckAccountExist(accout string) bool {
 	row, err := DB.Query(CHECK_ACCOUNT_EXIST, accout)
 	defer row.Close()

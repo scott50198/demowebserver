@@ -41,7 +41,32 @@ func WelcomeHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("login"))
+	if r.Method == "GET" {
+		contents, err := ioutil.ReadFile(config.FrontendRoot + "/html/login.html")
+		if err != nil {
+			fmt.Println(err.Error())
+		}
+		w.Write(contents)
+	} else if r.Method == "POST" {
+		r.ParseForm()
+
+		account := r.Form.Get("account")
+		password := r.Form.Get("password")
+
+		if !dbhelper.CheckAccountAndPasswordValidate(account, password) {
+			resp := model.Response{
+				StatusCode: http.StatusConflict,
+				Msg:        "帳號或密碼錯誤，請重新輸入",
+			}
+			json.NewEncoder(w).Encode(resp)
+		} else {
+			resp := model.Response{
+				StatusCode: http.StatusOK,
+				Msg:        "登入成功",
+			}
+			json.NewEncoder(w).Encode(resp)
+		}
+	}
 }
 
 func RegisterHandler(w http.ResponseWriter, r *http.Request) {
