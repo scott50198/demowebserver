@@ -14,7 +14,7 @@ import (
 var DB *sql.DB
 
 func OpenDB() error {
-	db, err := sql.Open("mysql", config.SqlRootAccount+":"+config.SqlRootPassword+"@/"+config.SqlDBName)
+	db, err := sql.Open("mysql", config.SqlRootAccount+":"+config.SqlRootPassword+"@tcp(35.243.209.255)/"+config.SqlDBName)
 	if err != nil {
 		return err
 	}
