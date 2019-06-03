@@ -89,30 +89,31 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 
 		err := auth.Register(info)
 
+		resp := new(model.Response)
 		if err != nil {
-			fmt.Println(err.Error())
-			resp := model.Response{
-				StatusCode: http.StatusConflict,
-				Msg:        err.Error(),
-			}
+			resp.StatusCode = http.StatusConflict
+			resp.Msg = err.Error()
+			w.Header().Set("Content-Type", "application/json")
 			json.NewEncoder(w).Encode(resp)
 		} else {
 
 			setSession(info, w, r)
+			resp.StatusCode = http.StatusOK
+			resp.Msg = "OK"
+			resp.Contents = struct {
+				Path string `json:"path"`
+			}{
+				"/",
+			}
 
-			// resp := model.Response{
-			// 	StatusCode: http.StatusOK,
-			// 	Msg:        "OK",
-			// }
-			// json.NewEncoder(w).Encode(resp)
-			http.Redirect(w, r, "/", http.StatusFound)
+			w.Header().Set("Content-Type", "application/json")
+			json.NewEncoder(w).Encode(resp)
 		}
 	}
 }
 
 func setSession(info model.UserInfo, w http.ResponseWriter, r *http.Request) {
 	session, err := store.Get(r, "goSessionId")
-	w.Header().Set("Content-Type", "text/html")
 
 	if err != nil {
 		fmt.Println(err.Error())
