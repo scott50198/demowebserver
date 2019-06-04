@@ -23,13 +23,18 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err.Error())
 	}
 
+	a := ""
 	if session.IsNew {
 		http.Redirect(w, r, "/welcome", http.StatusFound)
 		return
+	} else {
+		for k, v := range session.Values {
+			a += fmt.Sprintf("key:%s,value:%s\n", k, v)
+		}
 	}
 
-	contents, _ := ioutil.ReadFile(config.FrontendRoot + "/html/main.html")
-	w.Write(contents)
+	// contents, _ := ioutil.ReadFile(config.FrontendRoot + "/html/main.html")
+	w.Write([]byte(a))
 }
 
 func WelcomeHandler(w http.ResponseWriter, r *http.Request) {
