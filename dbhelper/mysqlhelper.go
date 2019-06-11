@@ -71,19 +71,36 @@ func CheckEmailExist(email string) bool {
 	return row.Next()
 }
 
-func GetUserIdFromAccount(account string) (int, error) {
-	row, err := DB.Query(GET_USER_ID_FROM_ACCOUNT, account)
+// func GetUserIdFromAccount(account string) (int, error) {
+// 	row, err := DB.Query(GET_USER_ID_FROM_ACCOUNT, account)
+// 	defer row.Close()
+
+// 	if err != nil {
+// 		fmt.Println(err.Error())
+// 		return -1, mysqlErrorTranslater(err)
+// 	}
+
+// 	var id int
+// 	row.Scan(&id)
+
+// 	return id, nil
+// }
+
+func GetUserInfoFromAccount(account string) (model.UserInfo, error) {
+	row, err := DB.Query(GET_USER_INFO_FROM_ACCOUNT, account)
 	defer row.Close()
 
+	info := model.UserInfo{}
 	if err != nil {
 		fmt.Println(err.Error())
-		return -1, mysqlErrorTranslater(err)
+		return info, err
 	}
 
-	var id int
-	row.Scan(&id)
+	for row.Next() {
+		row.Scan(&info.Id, &info.Account, &info.Name, &info.Email)
+	}
 
-	return id, nil
+	return info, nil
 }
 
 func mysqlErrorTranslater(err error) error {

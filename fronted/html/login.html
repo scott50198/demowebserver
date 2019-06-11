@@ -31,7 +31,15 @@
                 data: { 'account': account, 'password': password },
                 dataType: "text",
                 success: function (data) {
-                    console.log(data)
+                    json = JSON.parse(data)
+                    code = json.statusCode
+
+                    if (code === 200) {
+                        console.log(200)
+                        window.location.href = json.contents.path
+                    } else {
+                        alert(json.msg)
+                    }
                 },
                 error: function (data) {
                     console.log(data)

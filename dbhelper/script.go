@@ -25,3 +25,6 @@ const GET_USER_ID_FROM_ACCOUNT = `select id from userInfo
 
 const CHECK_ACCOUNT_AND_PASSWORD_VALIDATE = `select * from userInfo
     where account = ? and password = sha2(?, 256)`
+
+const GET_USER_INFO_FROM_ACCOUNT = `select id, account, name, email from userInfo
+    where account = ?`

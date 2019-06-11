@@ -23,7 +23,7 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err.Error())
 	}
 
-	a := ""
+	var a string
 	if session.IsNew {
 		http.Redirect(w, r, "/welcome", http.StatusFound)
 		return
@@ -65,10 +65,19 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 			}
 			json.NewEncoder(w).Encode(resp)
 		} else {
+
+			setSession(account, w, r)
+
 			resp := model.Response{
 				StatusCode: http.StatusOK,
 				Msg:        "登入成功",
+				Contents: struct {
+					Path string `json:"path"`
+				}{
+					"/",
+				},
 			}
+			w.Header().Set("Content-Type", "application/json")
 			json.NewEncoder(w).Encode(resp)
 		}
 	}
@@ -102,7 +111,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 			json.NewEncoder(w).Encode(resp)
 		} else {
 
-			setSession(info, w, r)
+			setSession(info.Account, w, r)
 			resp.StatusCode = http.StatusOK
 			resp.Msg = "OK"
 			resp.Contents = struct {
@@ -117,20 +126,18 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func setSession(info model.UserInfo, w http.ResponseWriter, r *http.Request) {
+func setSession(account string, w http.ResponseWriter, r *http.Request) {
 	session, err := store.Get(r, "goSessionId")
 
 	if err != nil {
 		fmt.Println(err.Error())
 	}
 
-	id, err := dbhelper.GetUserIdFromAccount(info.Account)
+	info, err := dbhelper.GetUserInfoFromAccount(account)
 
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-
-	info.Id = id
 
 	session.Values["Account"] = info.Account
 	session.Values["Id"] = info.Id
