@@ -17,24 +17,22 @@ var store = sessions.NewCookieStore([]byte("goSessionId"))
 
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
 
-	session, err := store.Get(r, "goSessionId")
+	// session, err := store.Get(r, "goSessionId")
 
+	// if err != nil {
+	// 	fmt.Println(err.Error())
+	// }
+
+	// if session.IsNew {
+	// 	http.Redirect(w, r, "/welcome", http.StatusFound)
+	// 	return
+	// }
+
+	contents, err := ioutil.ReadFile(config.FrontendRoot + "/index.html")
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-
-	var a string
-	if session.IsNew {
-		http.Redirect(w, r, "/welcome", http.StatusFound)
-		return
-	} else {
-		for k, v := range session.Values {
-			a += fmt.Sprintf("key:%s,value:%s\n", k, v)
-		}
-	}
-
-	// contents, _ := ioutil.ReadFile(config.FrontendRoot + "/html/main.html")
-	w.Write([]byte(a))
+	w.Write(contents)
 }
 
 func WelcomeHandler(w http.ResponseWriter, r *http.Request) {
