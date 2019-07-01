@@ -2,6 +2,7 @@ package dbhelper
 
 import (
 	"database/sql"
+	"demowebserver/auth"
 	"demowebserver/config"
 	"demowebserver/model"
 	"errors"
@@ -14,7 +15,7 @@ import (
 var DB *sql.DB
 
 func OpenDB() error {
-	db, err := sql.Open("mysql", config.SqlRootAccount+":"+config.SqlRootPassword+"@tcp(35.243.209.255)/"+config.SqlDBName)
+	db, err := sql.Open("mysql", config.SqlRootAccount+":"+config.SqlRootPassword+"@tcp("+config.SqlDBHost+")/"+config.SqlDBName)
 	if err != nil {
 		return err
 	}
@@ -26,8 +27,8 @@ func OpenDB() error {
 
 func Register(user model.UserInfo) error {
 	_, err := DB.Exec(
-		INSERT_USERINFO,
-		user.Account, user.Password, user.Name, user.Email,
+		INSERT_USERINFO_2,
+		user.Account, auth.PasswordEncrypt(user.Password), user.Name, user.Email,
 	)
 	if err != nil {
 		return mysqlErrorTranslater(err)
@@ -36,7 +37,7 @@ func Register(user model.UserInfo) error {
 }
 
 func CheckAccountAndPasswordValidate(account string, password string) bool {
-	row, err := DB.Query(CHECK_ACCOUNT_AND_PASSWORD_VALIDATE, account, password)
+	row, err := DB.Query(CHECK_ACCOUNT_AND_PASSWORD_VALIDATE, account, auth.PasswordEncrypt(password))
 	defer row.Close()
 
 	if err != nil {
@@ -71,21 +72,6 @@ func CheckEmailExist(email string) bool {
 	return row.Next()
 }
 
-// func GetUserIdFromAccount(account string) (int, error) {
-// 	row, err := DB.Query(GET_USER_ID_FROM_ACCOUNT, account)
-// 	defer row.Close()
-
-// 	if err != nil {
-// 		fmt.Println(err.Error())
-// 		return -1, mysqlErrorTranslater(err)
-// 	}
-
-// 	var id int
-// 	row.Scan(&id)
-
-// 	return id, nil
-// }
-
 func GetUserInfoFromAccount(account string) (model.UserInfo, error) {
 	row, err := DB.Query(GET_USER_INFO_FROM_ACCOUNT, account)
 	defer row.Close()
@@ -110,10 +96,12 @@ func mysqlErrorTranslater(err error) error {
 		case 1062:
 			return errors.New("帳號重複，請重新輸入")
 		default:
+			fmt.Println(err.Error())
 			return errors.New("未知錯誤")
 		}
 
 	} else {
+		fmt.Println(err.Error())
 		return errors.New("未知錯誤")
 	}
 

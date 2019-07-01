@@ -14,6 +14,9 @@ const CREATE_USERINFO_TABLE = `create table userInfo(
 const INSERT_USERINFO = `INSERT INTO userInfo (account, password, name, email, createTime, updateTime) 
     SELECT ?, sha2(?, 256), ?, ?, now(), now()`
 
+const INSERT_USERINFO_2 = `insert into userInfo (account, password, name, email, createTime, updateTime)
+    values (?, ?, ?, ?, now(), now())`
+
 const CHECK_ACCOUNT_EXIST = `select * from userInfo
     where account= ?`
 
@@ -24,7 +27,7 @@ const GET_USER_ID_FROM_ACCOUNT = `select id from userInfo
     where account = ?`
 
 const CHECK_ACCOUNT_AND_PASSWORD_VALIDATE = `select * from userInfo
-    where account = ? and password = sha2(?, 256)`
+    where account = ? and password = ?`
 
 const GET_USER_INFO_FROM_ACCOUNT = `select id, account, name, email from userInfo
     where account = ?`
