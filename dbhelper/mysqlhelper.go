@@ -1,11 +1,9 @@
 package dbhelper
 
 import (
-	"crypto/sha256"
 	"database/sql"
 	"demowebserver/config"
 	"demowebserver/model"
-	"encoding/hex"
 	"errors"
 	"fmt"
 
@@ -29,7 +27,7 @@ func OpenDB() error {
 func Register(user model.UserInfo) error {
 	_, err := DB.Exec(
 		INSERT_USERINFO_2,
-		user.Account, PasswordEncrypt(user.Password), user.Name, user.Email,
+		user.Account, user.Password, user.Name, user.Email,
 	)
 	if err != nil {
 		return mysqlErrorTranslater(err)
@@ -38,7 +36,7 @@ func Register(user model.UserInfo) error {
 }
 
 func CheckAccountAndPasswordValidate(account string, password string) bool {
-	row, err := DB.Query(CHECK_ACCOUNT_AND_PASSWORD_VALIDATE, account, PasswordEncrypt(password))
+	row, err := DB.Query(CHECK_ACCOUNT_AND_PASSWORD_VALIDATE, account, password)
 	defer row.Close()
 
 	if err != nil {
@@ -106,11 +104,4 @@ func mysqlErrorTranslater(err error) error {
 		return errors.New("未知錯誤")
 	}
 
-}
-
-func PasswordEncrypt(password string) string {
-	h := sha256.New()
-	h.Write([]byte(password))
-	bs := h.Sum(nil)
-	return hex.EncodeToString(bs)
 }

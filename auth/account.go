@@ -1,8 +1,10 @@
 package auth
 
 import (
+	"crypto/sha256"
 	"demowebserver/dbhelper"
 	"demowebserver/model"
+	"encoding/hex"
 	"errors"
 	"regexp"
 )
@@ -20,6 +22,8 @@ func Register(data model.UserInfo) error {
 	if dbhelper.CheckEmailExist(data.Email) {
 		return errors.New("Email Is Exist")
 	}
+
+	data.Password = EncryptPassword(data.Password)
 
 	return dbhelper.Register(data)
 }
@@ -49,4 +53,11 @@ func checkUserInfoValidate(data model.UserInfo) bool {
 	}
 
 	return true
+}
+
+func EncryptPassword(password string) string {
+	h := sha256.New()
+	h.Write([]byte(password))
+	bs := h.Sum(nil)
+	return hex.EncodeToString(bs)
 }

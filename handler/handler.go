@@ -55,6 +55,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 
 		account := r.Form.Get("account")
 		password := r.Form.Get("password")
+		password = auth.EncryptPassword(password)
 
 		if !dbhelper.CheckAccountAndPasswordValidate(account, password) {
 			resp := model.Response{
